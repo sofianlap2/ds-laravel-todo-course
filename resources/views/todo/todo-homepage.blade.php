@@ -21,7 +21,7 @@
             </div>
         @endif
         <div class="todo_form">
-            <form action="" method="POST">
+            <form action="{{ route('todo.store') }}" method="POST">
                 @csrf
                 <input name="title" id="todo__add" type="text" placeholder="Add todo title">
                 <x-AddBtn addMsg='Add' />

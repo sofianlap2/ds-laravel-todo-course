@@ -22,6 +22,9 @@
             {{ $message }}
             @enderror
             <br>
+            <div class="box__table">
+                <a class="link" href="{{ route('auth.register') }}">Want to create a new account ?</a>
+            </div>
             <br>
             <div class="box__table">
                 <input class="btn" type="reset" value="annuler">

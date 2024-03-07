@@ -7,6 +7,9 @@
             <div>
                 {{ Auth::user()->name }}
             </div>
+            <div>
+                <a class="link" href="{{ route('auth.logout') }}">Logout</a>
+            </div>
         @endauth
     </div>
 </header>

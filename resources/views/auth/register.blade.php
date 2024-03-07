@@ -29,6 +29,9 @@
             {{ $message }}
             @enderror
             <br>
+            <div class="box__table">
+                <a class="link" href="{{ route('auth.indexLogin') }}">Already have an account ?</a>
+            </div>
             <br>
             <div class="box__table">
                 <input class="btn" type="reset" value="annuler">

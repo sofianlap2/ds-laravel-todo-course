@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\TodoModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class TodoController extends Controller
@@ -14,7 +15,8 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $todos = TodoModel::all();
+        //$todos = TodoModel::all();
+        $todos = TodoModel::where('user_id', Auth::user()->id)->get();
         return view('todo/todo-homepage', compact('todos'));
     }
 
@@ -42,6 +44,7 @@ class TodoController extends Controller
 
         $todo = new TodoModel();
         $todo->title = $request->get('title');
+        $todo->user()->associate(Auth::user());
         $todo->save();
 
         return redirect()->route('todo.index')->with('success', 'Todo added successfully');

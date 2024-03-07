@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\TodoModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +34,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            $todos = [];
+            $todos = TodoModel::where('user_id', Auth::user()->id)->get();
             return view('todo/todo-homepage', compact('todos'));
         } else {
             return redirect()->route('auth.indexLogin')->withErrors([
@@ -104,5 +105,14 @@ class AuthController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->regenerateToken();
+        $request->session()->invalidate();
+
+        return redirect()->route('auth.indexLogin');
     }
 }
