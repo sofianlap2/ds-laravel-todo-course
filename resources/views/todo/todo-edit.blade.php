@@ -21,7 +21,7 @@
                 <option {{ !$todo->is_completed ? 'selected' : '' }} value="0">Pending</option>
                 <option {{ $todo->is_completed ? 'selected' : '' }} value="1">Completed</option>
             </select>
-            <input type="submit" value="Edit Todo">
+            <input class="btn"  type="submit" value="Edit Todo">
         </form>
 
     </div>
