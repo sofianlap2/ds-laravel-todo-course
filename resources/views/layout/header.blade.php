@@ -3,6 +3,10 @@
         <h1>Todo list App</h1>
     </div>
     <div class="header__infos">
-        
+        @auth
+            <div>
+                {{ Auth::user()->name }}
+            </div>
+        @endauth
     </div>
 </header>
