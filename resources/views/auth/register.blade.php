@@ -5,7 +5,7 @@
 @section('content')
     <h1>Inscription</h1>
     <div class="todo_form">
-        <form action="{{ route('auth.store') }}" method="POST" name="register">
+        <form action="{{ route('auth.store') }}" method="POST" name="register" enctype="multipart/form-data">
             @csrf
             <div class="box__table">
                 <label for="">Name :</label>
@@ -28,6 +28,15 @@
             @error('password')
             {{ $message }}
             @enderror
+
+            <div class="box__table">
+                <label for="">Image :</label>
+                <input type="file" name="image_upload">
+            </div>
+            @error('image_upload')
+            {{ $message }}
+            @enderror
+
             <br>
             <div class="box__table">
                 <a class="link" href="{{ route('auth.indexLogin') }}">Already have an account ?</a>

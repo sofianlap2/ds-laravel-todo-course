@@ -59,17 +59,27 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|min:3|max:60',
             'email' => 'required|email',
-            'password' => 'required|min:8'
+            'password' => 'required|min:8',
+            'image_upload' => 'max:5000'
         ]);
 
         if ($validator->fails()) {
             return redirect()->route('auth.register')->withErrors($validator);
         }
 
+        $image = $request->file('image_upload');
+
+        if($image != null && !$image->getError() ) {
+            $imagePath = $image->store('todo', 'public');
+        } else {
+            $imagePath = "";
+        }
+
         User::create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password'))
+            'password' => Hash::make($request->get('password')),
+            'image' => $imagePath
         ]);
 
         return redirect()->route('auth.indexLogin');
