@@ -3,25 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\TodoModel;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller
+class AuthControllerApi extends Controller
 {
-    public function index()
-    {
-        return view('auth/register');
-    }
-
-    public function indexLogin()
-    {
-        return view('auth/login');
-    }
-
     public function doLogin(Request $request)
     {
         $credentials = $request->validate([
@@ -30,13 +19,12 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            $todos = TodoModel::where('user_id', Auth::user()->id)->get();
-            return view('todo/todo-homepage', compact('todos'));
+            $user = Auth::user();
+            $token = $user->createToken('API Token')->plainTextToken;
+            return response()->json(['token' => $token]);
         } else {
-            return redirect()->route('auth.indexLogin')->withErrors([
-                'email' => 'Credentials are incorrect'
-            ])->onlyInput('email');
+            return response()->json(['error' => "Credentials incorrect"], 400);
+
         }
     }
 
@@ -50,7 +38,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('auth.register')->withErrors($validator);
+            return response()->json(['errors' => $validator->errors()->toArray()], 400);
         }
 
         $image = $request->file('image_upload');
@@ -61,22 +49,22 @@ class AuthController extends Controller
             $imagePath = "";
         }
 
-        User::create([
+        $user= User::create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
             'image' => $imagePath
         ]);
 
-        return redirect()->route('auth.indexLogin');
+        $token = $user->createToken('API Token')->plainTextToken;
+        return response()->json(['token' => $token]);
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->regenerateToken();
-        $request->session()->invalidate();
+        $user = $request->user();
+        $user->tokens()->delete();
 
-        return redirect()->route('auth.indexLogin');
+        return response()->json(['message' => 'logout success']);
     }
 }
